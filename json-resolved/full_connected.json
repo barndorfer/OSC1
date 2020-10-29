@@ -1626,7 +1626,7 @@
   "definitions" : {
     "BrewerDetailsList" : {
       "type" : "object",
-      "required" : [ "AssetId", "BrewCount", "BrewerPartnerId", "ContactId", "DeviceType", "Model", "NetworkConnection", "PlacementLocation", "RegistrationApprovalStatus", "RegistrationDate", "SerialNumber", "Status", "WarrantyEndDate", "deviceId" ],
+      "required" : [ "AppUIVer", "AssetId", "BrewCount", "BrewerPartnerId", "ContactId", "DataRecipeVer", "DeviceType", "Model", "NetworkConnection", "PlacementLocation", "RegistrationApprovalStatus", "RegistrationDate", "SerialNumber", "Status", "WarrantyEndDate", "deviceId" ],
       "properties" : {
         "SerialNumber" : {
           "type" : "string",
@@ -1712,6 +1712,16 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "KADAccountId"
+        },
+        "AppUIVer" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "AppUIVer"
+        },
+        "DataRecipeVer" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "DataRecipeVer"
         },
         "ContactId" : {
           "type" : "string",
