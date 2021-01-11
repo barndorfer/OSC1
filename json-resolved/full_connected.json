@@ -455,9 +455,23 @@
             "type": "string"
           },
           {
+            "name": "accountType",
+            "in": "query",
+            "description": "pass a variable to indicate if list of Business accounts or KAD accounts are required",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "filterpartnerAccName",
             "in": "query",
             "description": "pass optional Partner Account Name for filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filterPartnerAccPartyNum",
+            "in": "query",
+            "description": "pass optional Partner Account Party Num for filter",
             "required": false,
             "type": "string"
           },
@@ -469,6 +483,13 @@
             "type": "string"
           },
           {
+            "name": "filterAccPartyNum",
+            "in": "query",
+            "description": "pass optional Office Account PartyNum for filter",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "filterCity",
             "in": "query",
             "description": "pass optional City for filter",
@@ -476,7 +497,7 @@
             "type": "string"
           },
           {
-            "name": "filterState",
+            "name": "filterStateProvince",
             "in": "query",
             "description": "pass optional State for filter",
             "required": false,
@@ -570,7 +591,6 @@
         }
       }
     },
-
     "/Account/{accountPartyNum}": {
       "get": {
         "tags": [
@@ -601,6 +621,13 @@
             "name": "accountPartyNum",
             "in": "path",
             "description": "pass account Party Number to look up account in OEC",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "accountType",
+            "in": "query",
+            "description": "pass account type to look up Distributor account Info Vs Business Account Info",
             "required": true,
             "type": "string"
           }
@@ -652,6 +679,13 @@
             "name": "accountPartyNum",
             "in": "path",
             "description": "pass account party number (unique key) to be updated",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "accountType",
+            "in": "query",
+            "description": "pass accountType to indicate if it's KAD Account or Business Account",
             "required": true,
             "type": "string"
           },
@@ -3261,7 +3295,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "state": {
+            "state_province": {
               "type": "string",
               "format": "uuid"
             },
@@ -3288,6 +3322,22 @@
             "partnerAccNum": {
               "type": "string",
               "format": "uuid"
+            },
+            "primaryContactPartyNum": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "primaryContactName": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "primaryContactPhone": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "primaryContactEmail": {
+              "type": "string",
+              "format": "uuid"
             }
           },
           "example": [
@@ -3298,13 +3348,17 @@
               "regStatus": "Active",
               "regDate": "2016-08-29T09:12:33.001Z",
               "city": "MIDDLESEX",
-              "state": "MA",
+              "state_province": "MA",
               "zipcode": "01702",
               "country": "USA",
               "address": "417 Waverly St.",
               "partnerAccPartyNum": "FSN185187",
               "partnerAccName": "W.B. MASON FRAMINGHAM (SHIP TO)",
-              "partnerAccNum": 6000033773
+              "partnerAccNum": 6000033773,
+              "primaryContactPartyNum": "FSNC185187",
+              "primaryContactName": "John Smith",
+              "primaryContactPhone": "888-888-8888",
+              "primaryContactEmail": "test1.test1@test.com"
             },
             {
               "accountPartyNum": "FSN2716880",
@@ -3313,13 +3367,17 @@
               "regStatus": "Active",
               "regDate": "2016-08-29T09:12:33.001Z",
               "city": "MIDDLESEX",
-              "state": "MA",
+              "state_province": "MA",
               "zipcode": "01701",
               "country": "USA",
               "address": "100 State St",
               "partnerAccPartyNum": "FSN185187",
               "partnerAccName": "W.B. MASON FRAMINGHAM (SHIP TO)",
-              "partnerAccNum": 6000033773
+              "partnerAccNum": 6000033773,
+              "primaryContactPartyNum": "FSNC185187",
+              "primaryContactName": "John Smith",
+              "primaryContactPhone": "888-888-8888",
+              "primaryContactEmail": "test1.test1@test.com"
             }
           ]
         }
@@ -3358,7 +3416,7 @@
           "format": "uuid",
           "example": "MIDDLESEX"
         },
-        "state": {
+        "state_province": {
           "type": "string",
           "format": "uuid",
           "example": "MA"
@@ -3427,8 +3485,7 @@
         "address1",
         "address2",
         "city",
-        "state",
-        "province",
+        "state_province",
         "zipcode",
         "country",
         "partnerAccPartyNum",
@@ -3455,15 +3512,10 @@
           "format": "uuid",
           "example": "Framingham"
         },
-        "state": {
+        "state_province": {
           "type": "string",
           "format": "uuid",
           "example": "MA"
-        },
-        "province": {
-          "type": "string",
-          "format": "uuid",
-          "example": ""
         },
         "zipcode": {
           "type": "string",
@@ -3487,7 +3539,6 @@
         }
       }
     },
-
     "AccountReqUpdate": {
       "type": "object",
       "required": [
@@ -3521,15 +3572,10 @@
           "format": "uuid",
           "example": "Framingham"
         },
-        "state": {
+        "state_province": {
           "type": "string",
           "format": "uuid",
           "example": "MA"
-        },
-        "province": {
-          "type": "string",
-          "format": "uuid",
-          "example": ""
         },
         "zipcode": {
           "type": "string",
@@ -3541,10 +3587,20 @@
           "format": "uuid",
           "example": "USA"
         },
-        "partnerAccPartyNum": {
+        "partnerRelChangedFlg": {
+          "type": "string",
+          "format": "uuid",
+          "example": true
+        },
+        "currentPartnerAccPartyNum": {
           "type": "string",
           "format": "uuid",
           "example": "FSN185187"
+        },
+        "oldPartnerAccPartyNum": {
+          "type": "string",
+          "format": "uuid",
+          "example": "FSN185188"
         },
         "primaryContactPartyNum": {
           "type": "string",
