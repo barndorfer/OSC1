@@ -33,36 +33,35 @@
         "operationId" : "uninstall_start",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an optional KADAccountId string for looking up user",
-          "required" : false,
+          "name" : "X-Partner-ID",
+          "in" : "header",
+          "description" : "pass the Partner Accpunt ID of the user as a path parameter",
+          "required" : true,
           "type" : "string"
         }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an optional UserId string for looking up user",
-          "required" : false,
+          "name" : "X-Requester-ID",
+          "in" : "header",
+          "description" : "pass the userId for the requester as a header variable",
+          "required" : true,
           "type" : "string"
         }, {
-          "name" : "ReqForSearchUserId",
-          "in" : "query",
-          "description" : "pass an optional UserId string for looking up user",
-          "required" : false,
-          "type" : "string"
+          "in" : "body",
+          "name" : "InstallRequest",
+          "description" : "submit Brewer un-installation request parameters",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/InstallRequest"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/UserList"
-              }
-            }
+            "description" : "SUCCESS"
           },
           "400" : {
             "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
           }
         }
       }
@@ -75,36 +74,23 @@
         "operationId" : "o_iot_cleanup",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an  KADAccountId string for looking up user",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an  UserId string for looking up user",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "ReqForSearchUserId",
-          "in" : "query",
-          "description" : "pass an  UserId string for looking up user",
-          "required" : false,
-          "type" : "string"
+          "in" : "body",
+          "name" : "clean",
+          "description" : "submit iot id to clean up",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/O_IOT_REQUEST"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/UserList"
-              }
-            }
+            "description" : "SUCCESS"
           },
           "400" : {
             "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
           }
         }
       }
@@ -118,27 +104,29 @@
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an  UserId string",
-          "required" : false,
-          "type" : "string"
+          "in" : "body",
+          "name" : "clean",
+          "description" : "submit iot id to clean up",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/O_IOT_REQUEST"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "results for deactivating user"
+            "description" : "SUCCESS"
           },
           "400" : {
-            "description" : "invalid input, object invalid"
+            "description" : "bad input parameter"
           },
-          "409" : {
-            "description" : "an existing item already exists"
+          "401" : {
+            "description" : "incorrect security"
           }
         }
       }
     },
-    "/o_iot_device_deactivate" : {
-      "post" : {
+    "/iot/api/v2/devices/{device-id}" : {
+      "delete" : {
         "tags" : [ "OIOT" ],
         "summary" : "o_iot_device_deactivate",
         "description" : "Deactivate Device",
@@ -146,75 +134,94 @@
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an  KADAccountId string for looking up user",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an  UserId string",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "ReqForSearchUserId",
-          "in" : "query",
-          "description" : "pass an  UserId string",
-          "required" : false,
+          "name" : "device-id",
+          "in" : "path",
+          "description" : "pass a device-id",
+          "required" : true,
           "type" : "string"
         } ],
         "responses" : {
-          "200" : {
-            "description" : "results for reset password (success/failure)",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/ResetPasswordResponse"
-              }
-            }
+          "204" : {
+            "description" : "Successfully processed."
           },
-          "400" : {
-            "description" : "invalid input, object invalid"
+          "403" : {
+            "description" : "Forbidden. The server understood the request, but is refusing to fulfill it. Authorization will not help and the request SHOULD NOT be repeated."
           },
-          "409" : {
-            "description" : "an existing item already exists"
+          "401" : {
+            "description" : "Unauthorized. The request requires user authentication."
+          },
+          "404" : {
+            "description" : "Not Found. The server has not found anything matching the Request-URI. No indication is given of whether the condition is temporary or permanent."
           }
         }
       }
     },
-    "/oec_deactivate_device" : {
+    "/KGMAsset_c{OEC_DEVICE_ID}" : {
       "post" : {
         "tags" : [ "OEC" ],
         "summary" : "reset asset in KGMAsset + Installbased Asset",
         "description" : "oec_deactivate_device\n",
-        "operationId" : "oec_deactivate_device",
+        "operationId" : "oec_deactivate_device_kgm",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an optional KADAccountId string for looking up user",
-          "required" : false,
+          "name" : "OEC_DEVICE_ID",
+          "in" : "path",
+          "description" : "send in the OEC Device ID needing changes",
+          "required" : true,
           "type" : "string"
         }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an optional UserId string for looking up user",
-          "required" : false,
-          "type" : "string"
+          "in" : "body",
+          "name" : "body",
+          "description" : "values needed in EC",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/EC_KGMAssetUpdate"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/UserList"
-              }
-            }
+            "description" : "SUCCESS"
           },
           "400" : {
             "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
+          }
+        }
+      }
+    },
+    "/installedBaseAssets{OEC_DEVICE_ID}" : {
+      "post" : {
+        "tags" : [ "OEC" ],
+        "summary" : "reset asset in KGMAsset + Installbased Asset",
+        "description" : "oec_deactivate_device\n",
+        "operationId" : "oec_deactivate_device_ib",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "OEC_DEVICE_ID",
+          "in" : "path",
+          "description" : "send in teh OEC Device ID needing changes",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "values needed in EC",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/EC_IBAssetUpdate"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
           }
         }
       }
@@ -223,7 +230,7 @@
       "post" : {
         "tags" : [ "AZURE" ],
         "summary" : "azure_deactivate_device",
-        "description" : "azure_deactivate_device\n",
+        "description" : "!!!Awaiting Azure IOT service!!!\n",
         "operationId" : "azure_deactivate_device",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -235,13 +242,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/LocationList"
-              }
-            }
+            "description" : "search results matching criteria"
           },
           "400" : {
             "description" : "bad input parameter"
@@ -249,7 +250,7 @@
         }
       }
     },
-    "/oec_sr_create" : {
+    "/serviceRequests" : {
       "post" : {
         "tags" : [ "OEC" ],
         "summary" : "sr_create",
@@ -257,43 +258,80 @@
         "operationId" : "sr_create",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "PlacementLocationName",
-          "in" : "query",
-          "description" : "pass an optional PlacementLocationName string",
+          "in" : "body",
+          "name" : "body",
+          "description" : "search results matching criteria",
           "required" : false,
-          "type" : "string"
+          "schema" : {
+            "properties" : {
+              "SeverityCd" : {
+                "type" : "string",
+                "example" : "ORA_SVC_SEV3"
+              },
+              "ChannelTypeCd" : {
+                "type" : "string",
+                "example" : "WEB_AMP"
+              },
+              "BUOrgId" : {
+                "type" : "string",
+                "example" : "300000000473163"
+              },
+              "Category_c" : {
+                "type" : "string",
+                "example" : "SVC_BREWER_UNINSTALLATION"
+              },
+              "AssetSerialNumber_Id_c" : {
+                "type" : "string",
+                "example" : "300000419003656"
+              },
+              "Scanned_c" : {
+                "type" : "string",
+                "example" : "N"
+              },
+              "AmpRequestorUserId_c" : {
+                "type" : "string",
+                "example" : "300000412298942"
+              },
+              "RequestedPartnerId_c" : {
+                "type" : "string",
+                "example" : "300000312756369"
+              },
+              "AlertNum_c" : {
+                "type" : "string",
+                "example" : "B1"
+              },
+              "AMP_ContactId_Id_c" : {
+                "type" : "string",
+                "example" : "300000418860710"
+              },
+              "AMP_Requestor_Id_c" : {
+                "type" : "string",
+                "example" : "300000412298942"
+              },
+              "RequestedPlacementDesc_c" : {
+                "type" : "string",
+                "example" : "Bryan Home-3"
+              },
+              "AmpRequestedCurrentAccount_Id_c" : {
+                "type" : "string",
+                "example" : "300000418909023"
+              },
+              "Title" : {
+                "type" : "string",
+                "example" : "UnInstallRequest"
+              }
+            }
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "object",
-              "properties" : {
-                "partnerId" : {
-                  "type" : "string",
-                  "example" : "p0000000001"
-                },
-                "counts" : {
-                  "type" : "object",
-                  "properties" : {
-                    "alertcount" : {
-                      "type" : "integer",
-                      "example" : 5
-                    },
-                    "consumptioncount" : {
-                      "type" : "integer",
-                      "example" : 1054
-                    }
-                  }
-                }
-              }
-            }
+            "description" : "Success"
           },
           "400" : {
             "description" : "bad input parameter"
           },
           "404" : {
-            "description" : "Account Record not found"
+            "description" : "not found"
           }
         },
         "security" : [ {
@@ -319,183 +357,6 @@
     }
   },
   "definitions" : {
-    "BrewerDetailsList" : {
-      "type" : "object",
-      "required" : [ "AppUIVer", "AssetId", "BrewCount", "BrewerPartnerId", "ContactId", "DataRecipeVer", "DeviceType", "Model", "NetworkConnection", "PlacementLocation", "RegistrationApprovalStatus", "RegistrationDate", "SerialNumber", "Status", "WarrantyEndDate", "deviceId" ],
-      "properties" : {
-        "SerialNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "SerialNumber"
-        },
-        "DeviceType" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "DeviceType"
-        },
-        "PlacementLocation" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PlacementLocation"
-        },
-        "Status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Status"
-        },
-        "KABBusinessAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KABBusinessAccount"
-        },
-        "RegistrationApprovalStatus" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "RegistrationApprovalStatus"
-        },
-        "RegistrationDate" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "RegistrationDate"
-        },
-        "deviceId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "deviceId"
-        },
-        "AssetId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AssetId"
-        },
-        "WarrantyEndDate" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "Model" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Model"
-        },
-        "Firmware" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Firmware"
-        },
-        "BrewCount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Model"
-        },
-        "NetworkConnection" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NetworkConnection"
-        },
-        "BrewerPartnerId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BrewerPartnerId"
-        },
-        "UserID" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "UserID"
-        },
-        "KADAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccountId"
-        },
-        "AppUIVer" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AppUIVer"
-        },
-        "DataRecipeVer" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "DataRecipeVer"
-        },
-        "ContactId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ContactId"
-        }
-      }
-    },
-    "RegistrationRequest" : {
-      "type" : "object",
-      "required" : [ "assetId", "assetTypeID", "brewerPartnerId", "businessAccGroupId", "businessAccountId", "contactId", "contactName", "deviceId", "ioTOrgID", "partnerGroupId", "placementLocation", "registrationApprovalStatus", "serialNumber" ],
-      "properties" : {
-        "assetId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ast-000000000abc"
-        },
-        "brewerPartnerId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ka-000000000a1"
-        },
-        "partnerGroupId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "pg-000001"
-        },
-        "businessAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ba-0000001"
-        },
-        "businessAccGroupId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "bag-0000001"
-        },
-        "contactId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "c-00000001"
-        },
-        "contactName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "John Smith"
-        },
-        "placementLocation" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "1st Floor Cafetaria"
-        },
-        "registrationApprovalStatus" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Approved"
-        },
-        "serialNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "4500.000.00001"
-        },
-        "deviceId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "d-0000001"
-        },
-        "assetTypeID" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "asset-type-001"
-        },
-        "ioTOrgID" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Org-001"
-        }
-      }
-    },
     "BrewerDetail" : {
       "type" : "object",
       "required" : [ "appUIVersion", "assetId", "brewerPartnerId", "contactId", "dataRecipeVer", "deviceId", "deviceType", "model", "networkConnection", "placementLocation", "registrationDate", "registrationStatus", "serialNumber", "status", "warrantyEndDate" ],
@@ -680,641 +541,97 @@
         }
       }
     },
-    "UserList" : {
+    "O_IOT_REQUEST" : {
       "type" : "object",
-      "required" : [ "Address", "EmailAddress", "ErrorCode", "ErrorMessage", "FirstName", "LastName", "PartnerID", "PartnerName", "PhoneNumber", "Status", "UserId" ],
+      "required" : [ "deviceId_azure", "deviceId_oracle", "serialNum" ],
       "properties" : {
-        "FirstName" : {
+        "serialNum" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "FirstName"
+          "example" : "4500.000.0000"
         },
-        "LastName" : {
+        "assetId" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "LastName"
+          "example" : "OECAssetID"
         },
-        "UserId" : {
+        "deviceId_oracle" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "UserId"
+          "example" : "Oracle IOT ID"
         },
-        "EmailAddress" : {
+        "deviceId_azure" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "EmailAddress"
-        },
-        "Status" : {
-          "type" : "string",
-          "format" : "SUCCESS",
-          "example" : "Status"
-        },
-        "ErrorCode" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ErrorCode"
-        },
-        "ErrorMessage" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ErrorMessage"
-        },
-        "PartnerID" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PartnerID"
-        },
-        "PartnerName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PartnerName"
-        },
-        "Address" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Address"
-        },
-        "CreatedDate" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "Role" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Role"
-        },
-        "PhoneNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PhoneNumber"
+          "example" : "AZURE IOT ID"
         }
       }
     },
-    "AccountList" : {
+    "EC_KGMAssetUpdate" : {
       "type" : "object",
-      "required" : [ "KADAccountId", "KADAccountName" ],
+      "required" : [ "AMPRegistrationStatus_c" ],
       "properties" : {
-        "KADAccountName" : {
+        "AMPRegistrationStatus_c" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "KADAccountName"
-        },
-        "KADAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccountId"
-        },
-        "ListOfContact" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/ListOfContact"
-          }
+          "example" : "UNINSTALLED"
         }
       }
     },
-    "Brands" : {
+    "EC_IBAssetUpdate" : {
       "type" : "object",
-      "required" : [ "BrandName", "MasterBrandName" ],
+      "required" : [ "IotEnabledFlag" ],
       "properties" : {
-        "MasterBrandName" : {
-          "type" : "string",
+        "IotEnabledFlag" : {
+          "type" : "boolean",
           "format" : "uuid",
-          "example" : "MasterBrandName"
-        },
-        "BrandName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BrandName"
+          "example" : false
         }
       }
     },
-    "ListOfContact" : {
+    "InstallRequest" : {
       "type" : "object",
-      "required" : [ "UserId" ],
+      "required" : [ "brewerLocation", "contactId", "deviceId_azure", "deviceId_oracle", "scanned", "serialNum" ],
       "properties" : {
-        "UserId" : {
+        "serialNum" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "UserId"
-        }
-      }
-    },
-    "Alerts" : {
-      "type" : "object",
-      "required" : [ "AlertName", "AlertType", "BusinessAccount", "Count", "Date", "Description", "KADAccount", "SerialNumber", "Severity" ],
-      "properties" : {
-        "AlertName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AlertName"
-        },
-        "AlertType" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AlertType"
-        },
-        "Description" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Description"
-        },
-        "Severity" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Severity"
-        },
-        "Date" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "KADAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccount"
-        },
-        "BusinessAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BusinessAccount"
-        },
-        "SerialNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "SerialNumber"
-        },
-        "Count" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Count"
-        }
-      }
-    },
-    "Consumption" : {
-      "type" : "object",
-      "required" : [ "AVGConsumption", "Brand", "BrewDate", "BusinessAccountId", "BusinessAccountName", "COUNTAlert", "COUNTConsumption", "KADAccountId", "KADAccountName", "LidType", "MasterBrand", "SerialNum", "UserID", "Variety" ],
-      "properties" : {
-        "KADAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccountId"
-        },
-        "BusinessAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BusinessAccountId"
-        },
-        "MasterBrand" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "MasterBrand"
-        },
-        "Brand" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Brand"
-        },
-        "LidType" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "LidType"
-        },
-        "BrewDate" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "Variety" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Variety"
-        },
-        "SerialNum" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "SerialNum"
-        },
-        "KADAccountName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccountName"
-        },
-        "BusinessAccountName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BusinessAccountName"
-        },
-        "UserID" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "UserID"
-        },
-        "COUNTConsumption" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "COUNTConsumption"
-        },
-        "COUNTAlert" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "COUNTAlert"
-        },
-        "AVGConsumption" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AVGConsumption"
-        }
-      }
-    },
-    "Variety" : {
-      "type" : "object",
-      "required" : [ "VarietyName" ],
-      "properties" : {
-        "VarietyName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "VarietyName"
-        }
-      }
-    },
-    "LocationList" : {
-      "type" : "object",
-      "required" : [ "PlacementLocationName" ],
-      "properties" : {
-        "PlacementLocationName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PlacementLocationName"
-        }
-      }
-    },
-    "PublishUnpublishMediaRequest" : {
-      "type" : "object",
-      "required" : [ "MediaId", "SerialNumberList" ],
-      "properties" : {
-        "MediaId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "MediaId"
-        },
-        "SerialNumberList" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/SerialNumber"
-          }
-        }
-      }
-    },
-    "SerialNumber" : {
-      "type" : "object",
-      "required" : [ "SerialNumber" ],
-      "properties" : {
-        "SerialNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "SerialNumber"
-        }
-      }
-    },
-    "PublishUnpublishMediaResponse" : {
-      "type" : "object",
-      "required" : [ "ErrorMessage", "Status" ],
-      "properties" : {
-        "Status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Success"
-        },
-        "ErrorMessage" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NA"
-        }
-      }
-    },
-    "MediaPLList" : {
-      "type" : "object",
-      "required" : [ "BusinessAccountId", "Image", "KADAccountId", "LastModified", "MediaId", "Status", "Title", "Type" ],
-      "properties" : {
-        "Image" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Image"
-        },
-        "Title" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Title"
-        },
-        "Type" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Type"
-        },
-        "Status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Status"
-        },
-        "NumberofBrewer" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NumberofBrewer"
-        },
-        "LastModified" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "MediaId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "MediaId"
+          "example" : "4500.000.0000"
         },
-        "KADAccountId" : {
+        "assetId" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "KADAccountId"
+          "example" : "OECAssetID"
         },
-        "BusinessAccountId" : {
+        "deviceId_oracle" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "BusinessAccountId"
-        }
-      }
-    },
-    "createMediaPlayListRequest" : {
-      "type" : "object",
-      "required" : [ "BusinessAccount", "DefaultBrewerId", "Description", "KADAccount", "LastModified", "LastModifiedAMPUserId", "PlayListName", "PlayListNumber", "Type" ],
-      "properties" : {
-        "PlayListName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PlayListName"
-        },
-        "PlayListNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PlayListNumber"
-        },
-        "Description" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Description"
-        },
-        "Type" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Type"
-        },
-        "KADAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADAccount"
-        },
-        "BusinessAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "BusinessAccount"
-        },
-        "DefaultBrewerId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "DefaultBrewerId"
-        },
-        "LastModified" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "LastModified"
-        },
-        "LastModifiedAMPUserId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "LastModifiedAMPUserId"
-        },
-        "Medialist" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Medialist"
-          }
-        }
-      }
-    },
-    "Medialist" : {
-      "type" : "object",
-      "required" : [ "ImageName", "ImageURL", "LastModifiedAMPUserId", "MediaNumber", "Order", "TransitionTime", "Type" ],
-      "properties" : {
-        "ImageName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ImageName"
-        },
-        "ImageURL" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ImageURL"
-        },
-        "Order" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Order"
-        },
-        "TransitionTime" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "TransitionTime"
-        },
-        "MediaNumber" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "MediaNumber"
-        },
-        "LastModifiedAMPUserId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "LastModifiedAMPUserId"
-        },
-        "Type" : {
-          "type" : "string",
-          "format" : "Type",
-          "example" : "Type"
-        }
-      }
-    },
-    "MediaDetailsList" : {
-      "type" : "object",
-      "required" : [ "Image", "LastModified", "NumberOfBrewer", "Status", "Title", "Type", "URL" ],
-      "properties" : {
-        "Image" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ImageName"
-        },
-        "Title" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Title"
+          "example" : "Oracle IOT ID"
         },
-        "Type" : {
+        "deviceId_azure" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "Type"
+          "example" : "AZURE IOT ID"
         },
-        "URL" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "https://google.com/image.png"
-        },
-        "Status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Status"
-        },
-        "NumberOfBrewer" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NumberOfBrewer"
-        },
-        "LastModified" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        }
-      }
-    },
-    "MediaDetails" : {
-      "type" : "object",
-      "required" : [ "Description", "ImageName", "Title", "URL" ],
-      "properties" : {
-        "ImageName" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "ImageName"
-        },
-        "Title" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Title"
-        },
-        "Description" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Description"
-        },
-        "URL" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "URL"
-        }
-      }
-    },
-    "createMediaPlayListResponse" : {
-      "type" : "object",
-      "required" : [ "ErrorMessage", "Status" ],
-      "properties" : {
-        "Status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Success"
-        },
-        "ErrorMessage" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NA"
-        }
-      }
-    },
-    "BrewerDetailsListResponse" : {
-      "type" : "object",
-      "required" : [ "BusinessAccount", "DeviceType", "KADAccount", "Model", "PlacementLocation", "RegistrationApprovalStatus", "RegistrationDate", "SerialNumber", "Status" ],
-      "properties" : {
-        "SerialNumber" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "SerialNumber"
-        },
-        "DeviceType" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "DeviceType"
-        },
-        "PlacementLocation" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "PlacementLocation"
-        },
-        "Status" : {
-          "type" : "string",
+        "scanned" : {
+          "type" : "boolean",
           "format" : "uuid",
-          "example" : "Status"
+          "example" : true
         },
-        "KADAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADBusinessAccount"
-        },
-        "BusinessAccount" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "KADBusinessAccount"
-        },
-        "RegistrationApprovalStatus" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "RegistrationApprovalStatus"
-        },
-        "RegistrationDate" : {
-          "type" : "string",
-          "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z"
-        },
-        "Model" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Model"
-        }
-      }
-    },
-    "RegisterBrewerResponse" : {
-      "type" : "object",
-      "required" : [ "errorMessage", "requestId", "status" ],
-      "properties" : {
-        "status" : {
+        "brewerLocation" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "Success"
+          "example" : "Bryans Office"
         },
-        "errorMessage" : {
+        "contactId" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "NA"
+          "example" : "1000958"
         },
         "requestId" : {
           "type" : "string",
           "format" : "uuid",
-          "example" : "SR00001"
-        }
-      }
-    },
-    "ResetPasswordResponse" : {
-      "type" : "object",
-      "required" : [ "errorMessage", "status", "url" ],
-      "properties" : {
-        "status" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Success"
-        },
-        "errorMessage" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "NA"
-        },
-        "url" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "http://localhost/"
+          "example" : "10000965"
         }
       }
     },
@@ -1386,85 +703,6 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "Success"
-        }
-      }
-    },
-    "AccountLOV" : {
-      "type" : "object",
-      "properties" : {
-        "total" : {
-          "type" : "integer",
-          "format" : "int64",
-          "example" : 2
-        },
-        "accountLOVs" : {
-          "type" : "object",
-          "example" : [ {
-            "name" : "W B Mason",
-            "accountId" : "00000000123a",
-            "accountNumber" : "a00000000123a"
-          }, {
-            "name" : "Staples, Inc",
-            "accountId" : "00000000123b",
-            "accountNumber" : "a00000000123a"
-          } ],
-          "properties" : {
-            "name" : {
-              "type" : "string",
-              "format" : "uuid",
-              "example" : "W B Mason"
-            },
-            "accountId" : {
-              "type" : "string",
-              "format" : "uuid",
-              "example" : "00000000123abc"
-            },
-            "accountNumber" : {
-              "type" : "string",
-              "format" : "uuid",
-              "example" : "a0000000123abc"
-            }
-          }
-        }
-      }
-    },
-    "ContactLOV" : {
-      "type" : "object",
-      "properties" : {
-        "total" : {
-          "type" : "integer",
-          "format" : "int64",
-          "example" : 3
-        },
-        "contactLOVs" : {
-          "type" : "object",
-          "example" : [ {
-            "name" : "John Smith",
-            "contactId" : "00000000123a",
-            "contactNumber" : "c00000000123a"
-          }, {
-            "name" : "Sara Smith",
-            "contactId" : "00000000123b",
-            "contactNumber" : "c00000000123b"
-          }, {
-            "name" : "Mark Taylor",
-            "contactId" : "00000000123c",
-            "contactNumber" : "c00000000123c"
-          } ],
-          "properties" : {
-            "name" : {
-              "type" : "string",
-              "format" : "uuid"
-            },
-            "contactId" : {
-              "type" : "string",
-              "format" : "uuid"
-            },
-            "contactNumber" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          }
         }
       }
     }
