@@ -150,7 +150,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/ResetPasswordResponse"
+                "$ref" : "#/definitions/O_IOT_REQUEST"
               }
             }
           },
