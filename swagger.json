@@ -38,11 +38,11 @@
           "$ref" : "#/parameters/requesterID"
         }, {
           "in" : "body",
-          "name" : "UserAccess",
-          "description" : "submit user request parameters",
+          "name" : "InstallRequest",
+          "description" : "submit Brewer un-installation request parameters",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/UserAccess"
+            "$ref" : "#/definitions/InstallRequest"
           }
         } ],
         "responses" : {
