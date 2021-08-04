@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "These are OIC Integration APIs for Brewer Management",
+    "description" : "These are APIs for Uninstall",
     "version" : "1.0.0",
     "title" : "AMP OIC APIs",
     "contact" : {
@@ -253,7 +253,7 @@
           "basicAuth" : [ ]
         } ],
         "parameters" : [ {
-          "name" : "body",
+          "name" : "test",
           "in" : "body",
           "description" : "search results matching criteria",
           "schema" : {
@@ -332,6 +332,9 @@
     }
   },
   "definitions" : {
+    "LocationList" : {
+      "type" : "object"
+    },
     "BrewerDetail" : {
       "type" : "object",
       "required" : [ "assetId", "bewCount", "brewerPartnerId", "contactId", "deviceType", "dataRecipeVer", "appUIVersion", "model", "networkConnection", "placementLocation", "registrationStatus", "registrationDate", "serialNumber", "status", "warrantyEndDate", "deviceId" ],
