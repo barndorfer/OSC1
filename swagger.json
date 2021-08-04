@@ -117,84 +117,103 @@
         }
       }
     },
-    "/o_iot_device_deactivate" : {
-      "post" : {
+    "/iot/api/v2/devices/{device-id}" : {
+      "delete" : {
         "tags" : [ "OIOT" ],
         "summary" : "o_iot_device_deactivate",
-        "description" : "Deactivate Device -- TBD -- AWAITING ORACLE",
+        "description" : "Deactivate Device",
         "operationId" : "o_iot_device_deactivate",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an  KADAccountId string for looking up user",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an  UserId string",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "ReqForSearchUserId",
-          "in" : "query",
-          "description" : "pass an  UserId string",
-          "required" : false,
+          "name" : "device-id",
+          "in" : "path",
+          "description" : "pass a device-id",
+          "required" : true,
           "type" : "string"
         } ],
         "responses" : {
-          "200" : {
-            "description" : "results for reset password (success/failure)",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/O_IOT_REQUEST"
-              }
-            }
+          "204" : {
+            "description" : "Successfully processed."
           },
-          "400" : {
-            "description" : "invalid input, object invalid"
+          "403" : {
+            "description" : "Forbidden. The server understood the request, but is refusing to fulfill it. Authorization will not help and the request SHOULD NOT be repeated."
           },
-          "409" : {
-            "description" : "an existing item already exists"
+          "401" : {
+            "description" : "Unauthorized. The request requires user authentication."
+          },
+          "404" : {
+            "description" : "Not Found. The server has not found anything matching the Request-URI. No indication is given of whether the condition is temporary or permanent."
           }
         }
       }
     },
-    "/oec_deactivate_device" : {
+    "/KGMAsset_c{OEC_DEVICE_ID}" : {
       "post" : {
         "tags" : [ "OEC" ],
         "summary" : "reset asset in KGMAsset + Installbased Asset",
         "description" : "oec_deactivate_device\n",
-        "operationId" : "oec_deactivate_device",
+        "operationId" : "oec_deactivate_device_kgm",
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "KADAccountId",
-          "in" : "query",
-          "description" : "pass an optional KADAccountId string for looking up user",
-          "required" : false,
+          "name" : "OEC_DEVICE_ID",
+          "in" : "path",
+          "required" : true,
+          "description" : "send in the OEC Device ID needing changes",
           "type" : "string"
         }, {
-          "name" : "UserId",
-          "in" : "query",
-          "description" : "pass an optional UserId string for looking up user",
-          "required" : false,
-          "type" : "string"
+          "in" : "body",
+          "name" : "body",
+          "description" : "values needed in EC",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/EC_KGMAssetUpdate"
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/UserList"
-              }
-            }
+            "description" : "SUCCESS"
           },
           "400" : {
             "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
+          }
+        }
+      }
+    },
+    "/installedBaseAssets{OEC_DEVICE_ID}" : {
+      "post" : {
+        "tags" : [ "OEC" ],
+        "summary" : "reset asset in KGMAsset + Installbased Asset",
+        "description" : "oec_deactivate_device\n",
+        "operationId" : "oec_deactivate_device_ib",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "OEC_DEVICE_ID",
+          "in" : "path",
+          "required" : true,
+          "description" : "send in teh OEC Device ID needing changes",
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "values needed in EC",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/EC_IBAssetUpdate"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "SUCCESS"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          },
+          "401" : {
+            "description" : "incorrect security"
           }
         }
       }
@@ -203,7 +222,7 @@
       "post" : {
         "tags" : [ "AZURE" ],
         "summary" : "azure_deactivate_device",
-        "description" : "azure_deactivate_device\n",
+        "description" : "!!!Awaiting Azure IOT service!!!\n",
         "operationId" : "azure_deactivate_device",
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -215,13 +234,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/LocationList"
-              }
-            }
+            "description" : "search results matching criteria"
           },
           "400" : {
             "description" : "bad input parameter"
@@ -229,7 +242,7 @@
         }
       }
     },
-    "/oec_sr_create" : {
+    "/serviceRequests" : {
       "post" : {
         "tags" : [ "OEC" ],
         "summary" : "sr_create",
@@ -240,43 +253,79 @@
           "basicAuth" : [ ]
         } ],
         "parameters" : [ {
-          "name" : "PlacementLocationName",
-          "in" : "query",
-          "description" : "pass an optional PlacementLocationName string",
-          "required" : false,
-          "type" : "string"
+          "name" : "body",
+          "in" : "body",
+          "description" : "search results matching criteria",
+          "schema" : {
+            "properties" : {
+              "SeverityCd" : {
+                "type" : "string",
+                "example" : "ORA_SVC_SEV3"
+              },
+              "ChannelTypeCd" : {
+                "type" : "string",
+                "example" : "WEB_AMP"
+              },
+              "BUOrgId" : {
+                "type" : "string",
+                "example" : 300000000473163
+              },
+              "Category_c" : {
+                "type" : "string",
+                "example" : "SVC_BREWER_UNINSTALLATION"
+              },
+              "AssetSerialNumber_Id_c" : {
+                "type" : "string",
+                "example" : 300000419003656
+              },
+              "Scanned_c" : {
+                "type" : "string",
+                "example" : "N"
+              },
+              "AmpRequestorUserId_c" : {
+                "type" : "string",
+                "example" : 300000412298942
+              },
+              "RequestedPartnerId_c" : {
+                "type" : "string",
+                "example" : 300000312756369
+              },
+              "AlertNum_c" : {
+                "type" : "string",
+                "example" : "B1"
+              },
+              "AMP_ContactId_Id_c" : {
+                "type" : "string",
+                "example" : 300000418860710
+              },
+              "AMP_Requestor_Id_c" : {
+                "type" : "string",
+                "example" : 300000412298942
+              },
+              "RequestedPlacementDesc_c" : {
+                "type" : "string",
+                "example" : "Bryan Home-3"
+              },
+              "AmpRequestedCurrentAccount_Id_c" : {
+                "type" : "string",
+                "example" : 300000418909023
+              },
+              "Title" : {
+                "type" : "string",
+                "example" : "UnInstallRequest"
+              }
+            }
+          }
         } ],
         "responses" : {
           "200" : {
-            "description" : "search results matching criteria",
-            "schema" : {
-              "type" : "object",
-              "properties" : {
-                "partnerId" : {
-                  "type" : "string",
-                  "example" : "p0000000001"
-                },
-                "counts" : {
-                  "type" : "object",
-                  "properties" : {
-                    "alertcount" : {
-                      "type" : "integer",
-                      "example" : 5
-                    },
-                    "consumptioncount" : {
-                      "type" : "integer",
-                      "example" : 1054
-                    }
-                  }
-                }
-              }
-            }
+            "description" : "Success"
           },
           "400" : {
             "description" : "bad input parameter"
           },
           "404" : {
-            "description" : "Account Record not found"
+            "description" : "not found"
           }
         }
       }
@@ -490,6 +539,28 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "AZURE IOT ID"
+        }
+      }
+    },
+    "EC_KGMAssetUpdate" : {
+      "type" : "object",
+      "required" : [ "AMPRegistrationStatus_c" ],
+      "properties" : {
+        "AMPRegistrationStatus_c" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "UNINSTALLED"
+        }
+      }
+    },
+    "EC_IBAssetUpdate" : {
+      "type" : "object",
+      "required" : [ "IotEnabledFlag" ],
+      "properties" : {
+        "IotEnabledFlag" : {
+          "type" : "boolean",
+          "format" : "uuid",
+          "example" : false
         }
       }
     },
