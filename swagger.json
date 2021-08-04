@@ -553,6 +553,11 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "UNINSTALLED"
+        },
+        "AssetCurrentAccount_c" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : null
         }
       }
     },
