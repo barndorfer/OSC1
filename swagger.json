@@ -242,6 +242,30 @@
         }
       }
     },
+    "/azure_factoryreset_device" : {
+      "post" : {
+        "tags" : [ "AZURE" ],
+        "summary" : "azure factoryreset on device",
+        "description" : "!!!Awaiting Azure IOT service!!!\n",
+        "operationId" : "azure_factoryreset_device",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "PlacementLocationName",
+          "in" : "query",
+          "description" : "pass an optional PlacementLocationName string",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "search results matching criteria"
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          }
+        }
+      }
+    },
     "/serviceRequests" : {
       "post" : {
         "tags" : [ "OEC" ],
