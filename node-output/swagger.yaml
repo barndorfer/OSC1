@@ -622,7 +622,7 @@
     },
     "InstallRequest" : {
       "type" : "object",
-      "required" : [ "brewerLocation", "contactId", "deviceId_azure", "deviceId_oracle", "scanned", "serialNum" ],
+      "required" : [ "brewerLocation", "contactId", "deviceId_azure", "deviceId_oracle", "scanned", "serialNum", "source" ],
       "properties" : {
         "serialNum" : {
           "type" : "string",
@@ -663,6 +663,11 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "10000965"
+        },
+        "source" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "AMP OR C2 OR b123"
         }
       }
     },
