@@ -622,7 +622,7 @@
     },
     "InstallRequest" : {
       "type" : "object",
-      "required" : [ "brewerLocation", "contactId", "deviceId_azure", "deviceId_oracle", "scanned", "serialNum", "source" ],
+      "required" : [ "customerAccountId", "kadAccountId", "requesterId", "scanned", "serialNum", "source" ],
       "properties" : {
         "serialNum" : {
           "type" : "string",
@@ -634,32 +634,12 @@
           "format" : "uuid",
           "example" : "OECAssetID"
         },
-        "deviceId_oracle" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Oracle IOT ID"
-        },
-        "deviceId_azure" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "AZURE IOT ID"
-        },
         "scanned" : {
           "type" : "boolean",
           "format" : "uuid",
           "example" : true
         },
-        "brewerLocation" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "Bryans Office"
-        },
-        "contactId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "1000958"
-        },
-        "requestId" : {
+        "requesterId" : {
           "type" : "string",
           "format" : "uuid",
           "example" : "10000965"
@@ -668,6 +648,21 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "AMP OR C2 OR b123"
+        },
+        "country" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "US or CA"
+        },
+        "kadAccountId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "100095"
+        },
+        "customerAccountId" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "100097"
         }
       }
     },
