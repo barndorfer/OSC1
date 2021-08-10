@@ -598,7 +598,7 @@
     },
     "InstallRequest" : {
       "type" : "object",
-      "required" : [ "serialNum", "assetid", "scanned", "source", "kadAccountId", "customerAccountId", "requesterId" ],
+      "required" : [ "serialNum", "assetid", "scanned", "source" ],
       "properties" : {
         "serialNum" : {
           "type" : "string",
@@ -615,7 +615,7 @@
           "format" : "uuid",
           "example" : true
         },
-        "requesterId" : {
+        "requestId" : {
           "type" : "string",
           "format" : "uuid",
           "example" : 10000965
@@ -624,21 +624,6 @@
           "type" : "string",
           "format" : "uuid",
           "example" : "AMP OR C2 OR b123"
-        },
-        "country" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : "US or CA"
-        },
-        "kadAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : 100095
-        },
-        "customerAccountId" : {
-          "type" : "string",
-          "format" : "uuid",
-          "example" : 100097
         }
       }
     },
